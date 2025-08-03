@@ -9,7 +9,8 @@
 ## 開発環境
 
 - TypeScript/Node.js
-- ESM
+- このプロジェクトは type=module で ESM を利用している
+- Node.js v24 以上なので TypeScript (ts) ファイルを実行する場合は、`node src/main.ts` のように直接実行する
 
 ## Git 操作ルール
 
