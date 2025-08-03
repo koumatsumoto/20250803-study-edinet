@@ -4,6 +4,12 @@ EDINET API 調査・学習プロジェクト
 
 金融庁 EDINET システムの仕様理解と XBRL データ活用手法の実践的研究
 
+## ドキュメント
+
+📚 **[プロジェクトドキュメント](https://koumatsumoto.github.io/20250803-study-edinet/)**
+
+このプロジェクトのドキュメントは GitHub Pages で管理されています。詳細な情報や調査メモは上記リンクからご覧ください。
+
 ## 調査内容
 
 - EDINET API v2 の機能・制限調査
