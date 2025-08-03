@@ -1,0 +1,32 @@
+{
+  "name": "20250803-study-edinet",
+  "version": "1.0.0",
+  "description": "EDINET API 調査・学習プロジェクト",
+  "type": "module",
+  "main": "index.js",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koumatsumoto/20250803-study-edinet.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/koumatsumoto/20250803-study-edinet/issues"
+  },
+  "homepage": "https://github.com/koumatsumoto/20250803-study-edinet#readme",
+  "devDependencies": {
+    "@types/node": "^24.1.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.2"
+  },
+  "prettier": {
+    "printWidth": 150
+  }
+}
