@@ -11,4 +11,4 @@
 
 ## リンク集
 
-- [EDINET検索トップ](https://disclosure2.edinet-fsa.go.jp/week0010.aspx)
+- [EDINET検索トップ](https://disclosure2.edinet-fsa.go.jp/)

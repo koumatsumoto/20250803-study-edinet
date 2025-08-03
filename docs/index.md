@@ -23,5 +23,5 @@ EDINET は、有価証券報告書等の開示書類の提出及び閲覧を電�
 
 ## 関連リンク
 
-- [EDINET検索トップ](https://disclosure2.edinet-fsa.go.jp/week0010.aspx)
+- [EDINET検索トップ](https://disclosure2.edinet-fsa.go.jp/)
 - [金融庁ホームページ](https://www.fsa.go.jp/)
