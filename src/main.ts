@@ -2,6 +2,7 @@
 
 import { parseArgs } from "node:util";
 import { edinetListCommand } from "./commands/edinet-list.ts";
+import { edinetFetchCommand } from "./commands/edinet-fetch.ts";
 
 const { values, positionals } = parseArgs({
   args: process.argv.slice(2),
@@ -11,6 +12,18 @@ const { values, positionals } = parseArgs({
       type: "string",
       short: "d",
     },
+    docId: {
+      type: "string",
+      short: "i",
+    },
+    type: {
+      type: "string",
+      short: "t",
+    },
+    output: {
+      type: "string",
+      short: "o",
+    },
   },
 });
 
@@ -19,7 +32,7 @@ console.log("Positionals:", positionals);
 
 if (positionals.length === 0) {
   console.log("Usage: npm start <command>");
-  console.log("Available commands: edinet-list");
+  console.log("Available commands: edinet-list, edinet-fetch");
   process.exit(0);
 }
 
@@ -27,8 +40,10 @@ const commandName = positionals[0];
 
 if (commandName === "edinet-list") {
   edinetListCommand(values);
+} else if (commandName === "edinet-fetch") {
+  edinetFetchCommand(values);
 } else {
   console.error(`Unknown command: ${commandName}`);
-  console.log("Available commands: edinet-list");
+  console.log("Available commands: edinet-list, edinet-fetch");
   process.exit(1);
 }

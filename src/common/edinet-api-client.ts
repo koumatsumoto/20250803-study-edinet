@@ -76,4 +76,29 @@ export class EdinetApiClient {
 
     return response.json() as Promise<EdinetDocumentListResponse>;
   }
+
+  // Fetch document binary data (ZIP, PDF, etc.)
+  // type: 1=提出本文書及び監査報告書, 2=PDF, 3=代替書面・添付文書, 4=英文ファイル, 5=CSV
+  async fetchDocument(docId: string, type: string): Promise<ArrayBuffer> {
+    const params = new URLSearchParams({
+      type,
+      "Subscription-Key": this.subscriptionKey,
+    });
+
+    const url = `${this.baseUrl}/documents/${docId}?${params.toString()}`;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Error fetching document: ${response.statusText}`);
+    }
+
+    // Check Content-Type to ensure we got binary data, not JSON error
+    const contentType = response.headers.get("Content-Type");
+    if (contentType?.includes("application/json")) {
+      const errorData = (await response.json()) as any;
+      throw new Error(`API Error: ${errorData.metadata?.message || "Unknown error"}`);
+    }
+
+    return response.arrayBuffer();
+  }
 }
