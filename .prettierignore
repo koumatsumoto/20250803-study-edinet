@@ -1,7 +1,0 @@
-# Jekyll files
-docs/_layouts/
-docs/_includes/
-docs/_site/
-
-# SCSS files with Jekyll syntax
-docs/assets/css/style.scss
