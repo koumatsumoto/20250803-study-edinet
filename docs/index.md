@@ -15,6 +15,8 @@
 ### 設計・開発
 
 - [コマンドシステム設計](design/command-system.md) - コマンドラインシステムの設計仕様
+- [EDINET API仕様書](design/EDINET-API-Specs.pdf) - EDINET APIの公式仕様書
+- [書類一覧API仕様書](design/document-list-api-spec.md) - EDINET 書類一覧APIの詳細仕様
 
 ### メモ・ノート
 
