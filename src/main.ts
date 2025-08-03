@@ -7,10 +7,6 @@ const { values, positionals } = parseArgs({
   args: process.argv.slice(2),
   allowPositionals: true,
   options: {
-    type: {
-      type: "string",
-      short: "t",
-    },
     date: {
       type: "string",
       short: "d",
