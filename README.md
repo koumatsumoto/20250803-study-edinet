@@ -1,2 +1,17 @@
 # 20250803-study-edinet
-EDINET API &amp; XBRL data study project  金融庁EDINETから企業財務データを取得・解析するための調査学習リポジトリ。EDINET API仕様の理解、XBRLファイル構造の解析、TypeScriptでのデータ処理手法を実践的に研究。
+
+EDINET API 調査・学習プロジェクト
+
+金融庁 EDINET システムの仕様理解と XBRL データ活用手法の実践的研究
+
+## 調査内容
+
+- EDINET API v2 の機能・制限調査
+- XBRL ファイル構造の理解
+- TypeScript/Node.js でのデータ取得・解析
+- 財務データの構造化・可視化手法
+
+## 目標
+
+- 日本企業の財務データを効率的に取得・分析する手法の習得
+- XBRL データの実用的な活用方法の探求
