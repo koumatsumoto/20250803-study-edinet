@@ -37,5 +37,10 @@
     "**/*": [
       "prettier --write --ignore-unknown"
     ]
+  },
+  "dependencies": {
+    "@types/jszip": "^3.4.0",
+    "iconv-lite": "^0.6.3",
+    "jszip": "^3.10.1"
   }
 }
