@@ -111,25 +111,8 @@ export class EdinetApiClient {
     // Check Content-Type to ensure we got binary data, not JSON error
     const contentType = response.headers.get("Content-Type");
     if (contentType?.includes("application/json")) {
-      const errorData = await response.json();
-
-      // Validate error response structure
-      const errorSchema = z.object({
-        metadata: z
-          .object({
-            title: z.string().optional(),
-            message: z.string(),
-            status: z.string().optional(),
-          })
-          .optional(),
-      });
-
-      try {
-        const validatedError = errorSchema.parse(errorData);
-        throw new Error(`API Error: ${validatedError.metadata?.message || "Unknown error"}`);
-      } catch (validationError) {
-        throw new Error(`API Error with invalid response structure: ${JSON.stringify(errorData)}`);
-      }
+      const errorText = await response.text();
+      throw new Error(`API Error: ${errorText}`);
     }
 
     return response.arrayBuffer();
