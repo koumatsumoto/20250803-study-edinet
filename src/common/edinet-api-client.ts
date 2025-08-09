@@ -1,53 +1,59 @@
-interface EdinetDocument {
-  seqNumber: number;
-  docID: string;
-  edinetCode: string;
-  secCode: string | null;
-  JCN: string;
-  filerName: string;
-  fundCode: string | null;
-  ordinanceCode: string;
-  formCode: string;
-  docTypeCode: string;
-  periodStart: string | null;
-  periodEnd: string | null;
-  submitDateTime: string;
-  docDescription: string;
-  issuerEdinetCode: string | null;
-  subjectEdinetCode: string | null;
-  subsidiaryEdinetCode: string | null;
-  currentReportReason: string | null;
-  parentDocID: string | null;
-  opeDateTime: string | null;
-  withdrawalStatus: string;
-  docInfoEditStatus: string;
-  disclosureStatus: string;
-  xbrlFlag: string;
-  pdfFlag: string;
-  attachDocFlag: string;
-  englishDocFlag: string;
-  csvFlag: string;
-  legalStatus: string;
-}
+import { z } from "zod";
 
-interface EdinetMetadata {
-  title: string;
-  parameter: {
-    date: string;
-    type: string;
-  };
-  resultset: {
-    count: number;
-    processDateTime?: string;
-  };
-  status: string;
-  message: string;
-}
+const EdinetDocumentSchema = z.object({
+  seqNumber: z.number(),
+  docID: z.string(),
+  edinetCode: z.string().nullable(),
+  secCode: z.string().nullable(),
+  JCN: z.string().nullable(),
+  filerName: z.string().nullable(),
+  fundCode: z.string().nullable(),
+  ordinanceCode: z.string().nullable(),
+  formCode: z.string().nullable(),
+  docTypeCode: z.string().nullable(),
+  periodStart: z.string().nullable(),
+  periodEnd: z.string().nullable(),
+  submitDateTime: z.string().nullable(),
+  docDescription: z.string().nullable(),
+  issuerEdinetCode: z.string().nullable(),
+  subjectEdinetCode: z.string().nullable(),
+  subsidiaryEdinetCode: z.string().nullable(),
+  currentReportReason: z.string().nullable(),
+  parentDocID: z.string().nullable(),
+  opeDateTime: z.string().nullable(),
+  withdrawalStatus: z.string(),
+  docInfoEditStatus: z.string(),
+  disclosureStatus: z.string(),
+  xbrlFlag: z.string(),
+  pdfFlag: z.string(),
+  attachDocFlag: z.string(),
+  englishDocFlag: z.string(),
+  csvFlag: z.string(),
+  legalStatus: z.string(),
+});
 
-interface EdinetDocumentListResponse {
-  metadata: EdinetMetadata;
-  results?: EdinetDocument[];
-}
+const EdinetMetadataSchema = z.object({
+  title: z.string(),
+  parameter: z.object({
+    date: z.string(),
+    type: z.string(),
+  }),
+  resultset: z.object({
+    count: z.number(),
+    processDateTime: z.string().optional(),
+  }),
+  status: z.string(),
+  message: z.string(),
+});
+
+const EdinetDocumentListResponseSchema = z.object({
+  metadata: EdinetMetadataSchema,
+  results: z.array(EdinetDocumentSchema).optional(),
+});
+
+export type EdinetDocument = z.infer<typeof EdinetDocumentSchema>;
+export type EdinetMetadata = z.infer<typeof EdinetMetadataSchema>;
+export type EdinetDocumentListResponse = z.infer<typeof EdinetDocumentListResponseSchema>;
 
 export class EdinetApiClient {
   private baseUrl: string;
@@ -74,7 +80,17 @@ export class EdinetApiClient {
       throw new Error(`Error fetching documents: ${response.statusText}`);
     }
 
-    return response.json() as Promise<EdinetDocumentListResponse>;
+    const rawData = await response.json();
+
+    try {
+      const validatedData = EdinetDocumentListResponseSchema.parse(rawData);
+      return validatedData;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        throw new Error(`API response validation failed: ${error.message}`);
+      }
+      throw error;
+    }
   }
 
   // Fetch document binary data (ZIP, PDF, etc.)
@@ -95,8 +111,25 @@ export class EdinetApiClient {
     // Check Content-Type to ensure we got binary data, not JSON error
     const contentType = response.headers.get("Content-Type");
     if (contentType?.includes("application/json")) {
-      const errorData = (await response.json()) as any;
-      throw new Error(`API Error: ${errorData.metadata?.message || "Unknown error"}`);
+      const errorData = await response.json();
+
+      // Validate error response structure
+      const errorSchema = z.object({
+        metadata: z
+          .object({
+            title: z.string().optional(),
+            message: z.string(),
+            status: z.string().optional(),
+          })
+          .optional(),
+      });
+
+      try {
+        const validatedError = errorSchema.parse(errorData);
+        throw new Error(`API Error: ${validatedError.metadata?.message || "Unknown error"}`);
+      } catch (validationError) {
+        throw new Error(`API Error with invalid response structure: ${JSON.stringify(errorData)}`);
+      }
     }
 
     return response.arrayBuffer();

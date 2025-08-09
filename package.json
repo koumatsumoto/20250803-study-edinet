@@ -44,6 +44,7 @@
     "@types/jszip": "^3.4.0",
     "iconv-lite": "^0.6.3",
     "jszip": "^3.10.1",
-    "papaparse": "^5.5.3"
+    "papaparse": "^5.5.3",
+    "zod": "^4.0.16"
   }
 }
