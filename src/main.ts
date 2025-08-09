@@ -17,10 +17,6 @@ const { values, positionals } = parseArgs({
       type: "string",
       short: "i",
     },
-    type: {
-      type: "string",
-      short: "t",
-    },
     output: {
       type: "string",
       short: "o",
