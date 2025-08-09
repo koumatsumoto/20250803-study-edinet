@@ -1,9 +1,7 @@
 import { EdinetApiClient } from "../common/edinet-api-client.ts";
-import { convertCsvFilesToJson } from "../common/csv-to-json-converter.ts";
+import { EdinetZipProcessor } from "../common/edinet-zip-processor.ts";
 import fs from "node:fs/promises";
 import path from "node:path";
-import JSZip from "jszip";
-import iconv from "iconv-lite";
 
 const DOCUMENT_TYPE_CSV = "5";
 
@@ -14,6 +12,7 @@ export async function edinetFetchCommand(values: { docId?: string; output?: stri
   }
 
   const client = new EdinetApiClient();
+  const zipProcessor = new EdinetZipProcessor();
 
   try {
     console.log(`Fetching document: ${values.docId}, type: ${DOCUMENT_TYPE_CSV}`);
@@ -21,51 +20,27 @@ export async function edinetFetchCommand(values: { docId?: string; output?: stri
     const arrayBuffer = await client.fetchDocument(values.docId, DOCUMENT_TYPE_CSV);
     const buffer = Buffer.from(arrayBuffer);
 
-    // Extract CSV files from ZIP
-    const tmpDir = "tmp";
     console.log("Extracting ZIP contents...");
-    const zip = await JSZip.loadAsync(buffer);
 
-    // Find all CSV files in the ZIP
-    const allCsvFiles: Array<{ name: string; content: string }> = [];
+    // Process ZIP file based on JSON option
+    const result = values.json
+      ? await zipProcessor.processZipToJson(buffer, values.docId)
+      : { csvFiles: await zipProcessor.extractCsvFiles(buffer), jsonResult: undefined };
 
-    for (const [filename, file] of Object.entries(zip.files)) {
-      if (!file.dir && filename.toLowerCase().endsWith(".csv")) {
-        console.log(`Found CSV file: ${filename}`);
-        // Read as binary data first
-        const binaryData = await file.async("uint8array");
-
-        // EDINET CSV files are encoded in UTF-16 LE
-        let content: string;
-
-        try {
-          // Decode from UTF-16 LE to UTF-8
-          const buffer = Buffer.from(binaryData);
-          content = iconv.decode(buffer, "utf16le");
-          console.log(`Successfully decoded ${filename} from UTF-16 LE`);
-        } catch (error) {
-          // Fallback to Shift_JIS
-          try {
-            console.warn(`UTF-16 LE failed for ${filename}, trying Shift_JIS`);
-            const buffer = Buffer.from(binaryData);
-            content = iconv.decode(buffer, "shift_jis");
-          } catch (sjisError) {
-            // Last resort: UTF-8
-            console.warn(`All iconv methods failed for ${filename}, trying UTF-8`);
-            content = await file.async("text");
-          }
-        }
-
-        allCsvFiles.push({ name: filename, content });
-      }
-    }
+    const { csvFiles: allCsvFiles, jsonResult } = result;
 
     if (allCsvFiles.length === 0) {
       console.log("No CSV files found in the ZIP archive");
       return;
     }
 
+    // Log found CSV files
+    allCsvFiles.forEach((csvFile) => {
+      console.log(`Found CSV file: ${csvFile.name}`);
+    });
+
     // Save all CSV files to tmp/ directory
+    const tmpDir = "tmp";
     const csvOutputDir = path.join(tmpDir, `${values.docId}_type${DOCUMENT_TYPE_CSV}_csv`);
     await fs.mkdir(csvOutputDir, { recursive: true });
 
@@ -79,10 +54,8 @@ export async function edinetFetchCommand(values: { docId?: string; output?: stri
     console.log(`\nAll ${allCsvFiles.length} CSV file(s) saved to: ${csvOutputDir}`);
 
     // JSON出力オプションが指定されている場合
-    if (values.json) {
-      console.log("\nConverting CSV files to JSON...");
-      const jsonResult = convertCsvFilesToJson(allCsvFiles, values.docId);
-
+    if (values.json && jsonResult) {
+      console.log("\nJSON conversion completed.");
       const jsonOutputPath = path.join(csvOutputDir, `${values.docId}_facts.json`);
       await fs.writeFile(jsonOutputPath, JSON.stringify(jsonResult, null, 2), "utf8");
 
