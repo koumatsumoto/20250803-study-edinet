@@ -1,56 +1,54 @@
+import Papa from "papaparse";
 import type { DocumentMeta, Fact, FactIndex, EdinetJson } from "./csv-to-json-types.ts";
 import { COLUMN_MAP } from "./csv-to-json-types.ts";
 
-export function parseCsvToFacts(csvContent: string, sourceFileName: string): Fact[] {
-  const lines = csvContent.split("\n").filter((line) => line.trim().length > 0);
+function transformRowToFact(row: Record<string, string>, sourceFileName: string): Fact {
+  const fact: Fact = {
+    element_id: null,
+    label: null,
+    value: null,
+    context_id: null,
+    relative_year: null,
+    consolidation: null,
+    period_type: null,
+    unit_id: null,
+    period_start: null,
+    period_end: null,
+    decimals: null,
+    source_file: sourceFileName,
+  };
 
-  if (lines.length === 0) {
-    return [];
-  }
+  // 各列をマッピング
+  for (const [header, value] of Object.entries(row)) {
+    if (COLUMN_MAP[header] && value) {
+      const factKey = COLUMN_MAP[header];
 
-  // ヘッダー行をパース（タブ区切り）
-  const headers = lines[0]?.split("\t") || [];
-  const facts: Fact[] = [];
-
-  // データ行を処理
-  for (let i = 1; i < lines.length; i++) {
-    const values = lines[i]?.split("\t") || [];
-    const fact: Fact = {
-      element_id: null,
-      label: null,
-      value: null,
-      context_id: null,
-      relative_year: null,
-      consolidation: null,
-      period_type: null,
-      unit_id: null,
-      period_start: null,
-      period_end: null,
-      decimals: null,
-      source_file: sourceFileName,
-    };
-
-    // 各列をマッピング
-    for (let j = 0; j < headers.length && j < values.length; j++) {
-      const header = headers[j]?.trim().replace(/^"|"$/g, "") || "";
-      const value = values[j]?.trim().replace(/^"|"$/g, "") || "";
-
-      if (COLUMN_MAP[header]) {
-        const factKey = COLUMN_MAP[header];
-
-        // 値の型変換
-        if (factKey === "value" && value && !isNaN(Number(value))) {
-          fact[factKey] = Number(value);
-        } else if (value) {
-          fact[factKey] = value;
-        }
+      // 値の型変換
+      if (factKey === "value" && !isNaN(Number(value))) {
+        fact[factKey] = Number(value);
+      } else {
+        fact[factKey] = value;
       }
     }
-
-    facts.push(fact);
   }
 
-  return facts;
+  return fact;
+}
+
+export function parseCsvToFacts(csvContent: string, sourceFileName: string): Fact[] {
+  const result = Papa.parse(csvContent, {
+    delimiter: "\t",
+    header: true,
+    skipEmptyLines: true,
+    transformHeader: (header: string) => header.trim(),
+    transform: (value: string) => value.trim(),
+  });
+
+  if (result.errors.length > 0) {
+    console.warn(`CSV parsing warnings for ${sourceFileName}:`, result.errors);
+  }
+
+  return result.data.map((row: any) => transformRowToFact(row, sourceFileName));
 }
 
 export function createFactIndex(facts: Fact[]): FactIndex {

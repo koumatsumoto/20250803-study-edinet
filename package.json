@@ -26,6 +26,7 @@
   "homepage": "https://github.com/koumatsumoto/20250803-study-edinet#readme",
   "devDependencies": {
     "@types/node": "^24.1.0",
+    "@types/papaparse": "^5.3.16",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2",
     "prettier": "^3.6.2",
@@ -42,6 +43,7 @@
   "dependencies": {
     "@types/jszip": "^3.4.0",
     "iconv-lite": "^0.6.3",
-    "jszip": "^3.10.1"
+    "jszip": "^3.10.1",
+    "papaparse": "^5.5.3"
   }
 }
