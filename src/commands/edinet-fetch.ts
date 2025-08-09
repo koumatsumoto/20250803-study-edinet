@@ -1,4 +1,5 @@
 import { EdinetApiClient } from "../common/edinet-api-client.ts";
+import { convertCsvFilesToJson } from "../common/csv-to-json-converter.ts";
 import fs from "node:fs/promises";
 import path from "node:path";
 import JSZip from "jszip";
@@ -6,7 +7,7 @@ import iconv from "iconv-lite";
 
 const DOCUMENT_TYPE_CSV = "5";
 
-export async function edinetFetchCommand(values: { docId?: string; output?: string }) {
+export async function edinetFetchCommand(values: { docId?: string; output?: string; json?: boolean }) {
   if (!values.docId) {
     console.error("Error: Document ID is required. Use --docId or -d option.");
     process.exit(1);
@@ -76,6 +77,19 @@ export async function edinetFetchCommand(values: { docId?: string; output?: stri
     }
 
     console.log(`\nAll ${allCsvFiles.length} CSV file(s) saved to: ${csvOutputDir}`);
+
+    // JSON出力オプションが指定されている場合
+    if (values.json) {
+      console.log("\nConverting CSV files to JSON...");
+      const jsonResult = convertCsvFilesToJson(allCsvFiles, values.docId);
+
+      const jsonOutputPath = path.join(csvOutputDir, `${values.docId}_facts.json`);
+      await fs.writeFile(jsonOutputPath, JSON.stringify(jsonResult, null, 2), "utf8");
+
+      console.log(`JSON output saved to: ${jsonOutputPath}`);
+      console.log(`Total facts: ${jsonResult.facts.length}`);
+      console.log(`Indexed elements: ${Object.keys(jsonResult.index.facts_by_element).length}`);
+    }
   } catch (error) {
     console.error("Error fetching document:", error);
   }

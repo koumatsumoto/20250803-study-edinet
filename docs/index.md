@@ -22,6 +22,7 @@
 ### メモ・ノート
 
 - [作業メモ](notes/notes.md) - 調査・学習過程での気づきやメモ
+- [EDINET CSV → JSON化ガイド](notes/arranging_csv_results.md) - CSVからJSONへの変換仕様と実装方法
 
 ## EDINET について
 
