@@ -9,9 +9,8 @@ interface TestResult {
   success: boolean;
   error?: string;
   totalCsvFiles: number;
-  mainCsvFile?: string;
-  mainCsvSize?: number;
-  jpaudFilesFiltered: number;
+  largestCsvFile?: string;
+  largestCsvSize?: number;
 }
 
 export async function edinetTestBatchCommand() {
@@ -50,7 +49,6 @@ export async function edinetTestBatchCommand() {
         docId: doc.docID,
         success: false,
         totalCsvFiles: 0,
-        jpaudFilesFiltered: 0,
       };
 
       try {
@@ -88,27 +86,15 @@ export async function edinetTestBatchCommand() {
         if (allCsvFiles.length === 0) {
           result.error = "No CSV files found in ZIP";
         } else {
-          // Filter out jpaud- files
-          const mainCsvFiles = allCsvFiles.filter((file) => !path.basename(file.name).startsWith("jpaud-"));
-          result.jpaudFilesFiltered = allCsvFiles.length - mainCsvFiles.length;
+          // Find the largest CSV file for reference
+          const largestCsvFile = allCsvFiles.reduce((largest, current) => (current.content.length > largest.content.length ? current : largest));
 
-          let targetCsvFile: { name: string; content: string };
-          if (mainCsvFiles.length === 1) {
-            targetCsvFile = mainCsvFiles[0]!;
-          } else if (mainCsvFiles.length > 1) {
-            targetCsvFile = mainCsvFiles.reduce((largest, current) => (current.content.length > largest.content.length ? current : largest));
-          } else {
-            targetCsvFile = allCsvFiles.reduce((largest, current) => (current.content.length > largest.content.length ? current : largest));
-          }
-
-          result.mainCsvFile = path.basename(targetCsvFile.name);
-          result.mainCsvSize = targetCsvFile.content.length;
+          result.largestCsvFile = path.basename(largestCsvFile.name);
+          result.largestCsvSize = largestCsvFile.content.length;
           result.success = true;
         }
 
-        console.log(
-          `${progress} ✓ Success - ${result.totalCsvFiles} CSVs, filtered ${result.jpaudFilesFiltered} jpaud files, main: ${result.mainCsvFile} (${result.mainCsvSize} chars)`,
-        );
+        console.log(`${progress} ✓ Success - ${result.totalCsvFiles} CSVs, largest: ${result.largestCsvFile} (${result.largestCsvSize} chars)`);
       } catch (error) {
         result.error = error instanceof Error ? error.message : String(error);
         console.log(`${progress} ✗ Error - ${result.error}`);
@@ -138,13 +124,13 @@ export async function edinetTestBatchCommand() {
     const csvStats = testResults.filter((r) => r.success);
     if (csvStats.length > 0) {
       const totalCsvCounts = csvStats.map((r) => r.totalCsvFiles);
-      const jpaudFilteredCounts = csvStats.map((r) => r.jpaudFilesFiltered);
+      const largestCsvSizes = csvStats.map((r) => r.largestCsvSize || 0);
 
       console.log(`\nCSV File Statistics:`);
       console.log(`- Average total CSV files per document: ${(totalCsvCounts.reduce((a, b) => a + b, 0) / totalCsvCounts.length).toFixed(1)}`);
-      console.log(`- Average jpaud files filtered: ${(jpaudFilteredCounts.reduce((a, b) => a + b, 0) / jpaudFilteredCounts.length).toFixed(1)}`);
+      console.log(`- Average largest CSV file size: ${(largestCsvSizes.reduce((a, b) => a + b, 0) / largestCsvSizes.length).toFixed(0)} chars`);
       console.log(`- Documents with multiple CSV files: ${csvStats.filter((r) => r.totalCsvFiles > 1).length}`);
-      console.log(`- Documents with jpaud files: ${csvStats.filter((r) => r.jpaudFilesFiltered > 0).length}`);
+      console.log(`- Documents with single CSV file: ${csvStats.filter((r) => r.totalCsvFiles === 1).length}`);
     }
 
     // Error breakdown
