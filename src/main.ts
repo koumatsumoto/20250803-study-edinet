@@ -21,10 +21,6 @@ const { values, positionals } = parseArgs({
       type: "string",
       short: "o",
     },
-    json: {
-      type: "boolean",
-      short: "j",
-    },
   },
 });
 
