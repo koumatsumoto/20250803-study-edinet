@@ -19,6 +19,7 @@
 - [書類一覧API仕様書](design/document-list-api-spec.md) - EDINET 書類一覧APIの詳細仕様
 - [書類取得API仕様書](design/document-details-api.md) - EDINET 書類取得APIの詳細仕様
 - [テストフレームワーク](design/testing-framework.md) - Vitest と MSW を使用したテスト環境
+- [正規化データモデル設計](design/normalized-data-model.md) - EDINET財務データの正規化設計方針
 
 ### メモ・ノート
 
