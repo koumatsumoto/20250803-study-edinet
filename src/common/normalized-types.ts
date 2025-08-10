@@ -67,6 +67,33 @@ export type ProcessingSummary = {
   processing_time_ms: number;
 };
 
+// バッチ処理用拡張DocumentRecord
+export type BatchDocumentRecord = DocumentRecord & {
+  seq_number: number; // seqNumber (処理順序)
+  doc_description: string | null; // docDescription
+  batch_date: string; // バッチ対象日付
+};
+
+// バッチ処理結果
+export type BatchProcessingResult = {
+  batch_date: string;
+  total_documents: number;
+  target_documents: number;
+  processed_documents: number;
+  failed_documents: number;
+  processing_time_ms: number;
+  documents: BatchDocumentRecord[];
+  errors: BatchProcessingError[];
+};
+
+export type BatchProcessingError = {
+  doc_id: string;
+  filer_name: string | null;
+  error_type: "FETCH_ERROR" | "PROCESSING_ERROR" | "SAVE_ERROR";
+  error_message: string;
+  timestamp: string;
+};
+
 // 最終的なJSON出力フォーマット
 export type NormalizedJson = {
   meta: {
