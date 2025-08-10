@@ -36,18 +36,23 @@ if (positionals.length === 0) {
 
 const commandName = positionals[0];
 
-if (commandName === "edinet-list") {
-  edinetListCommand(values);
-} else if (commandName === "edinet-fetch") {
-  edinetFetchCommand(values);
-} else if (commandName === "edinet-test-batch") {
-  edinetTestBatchCommand();
-} else if (commandName === "batch") {
-  // 日付引数は2番目のpositionalから取得
-  const dateArg = positionals[1];
-  edinetBatchCommand({ date: dateArg });
-} else {
-  console.error(`Unknown command: ${commandName}`);
-  console.log("Available commands: edinet-list, edinet-fetch, edinet-test-batch, batch");
+try {
+  if (commandName === "edinet-list") {
+    await edinetListCommand(values);
+  } else if (commandName === "edinet-fetch") {
+    edinetFetchCommand(values);
+  } else if (commandName === "edinet-test-batch") {
+    edinetTestBatchCommand();
+  } else if (commandName === "batch") {
+    // 日付引数は2番目のpositionalから取得
+    const dateArg = positionals[1];
+    await edinetBatchCommand(dateArg ? { date: dateArg } : {});
+  } else {
+    console.error(`Unknown command: ${commandName}`);
+    console.log("Available commands: edinet-list, edinet-fetch, edinet-test-batch, batch");
+    process.exit(1);
+  }
+} catch (error) {
+  console.error(`❌ エラー: ${error instanceof Error ? error.message : String(error)}`);
   process.exit(1);
 }
