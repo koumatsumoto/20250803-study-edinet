@@ -1,23 +1,26 @@
-# 20250803-study-edinet
+# EDINET Financial Analyzer
 
-EDINET API 調査・学習プロジェクト
+EDINETデータを活用した有価証券報告書・四半期報告書の閲覧・分析アプリケーション
 
-金融庁 EDINET システムの仕様理解と XBRL データ活用手法の実践的研究
+金融庁 EDINET システムから企業の財務情報を取得・解析して、投資判断や企業分析をサポートします。
 
 ## ドキュメント
 
-📚 **[プロジェクトドキュメント](https://koumatsumoto.github.io/20250803-study-edinet/)**
+📚 **[プロジェクトドキュメント](https://koumatsumoto.github.io/edinet-financial-analyzer/)**
 
 このプロジェクトのドキュメントは GitHub Pages で管理されています。詳細な情報や調査メモは上記リンクからご覧ください。
 
-## 調査内容
+## 機能
 
-- EDINET API v2 の機能・制限調査
-- XBRL ファイル構造の理解
-- TypeScript/Node.js でのデータ取得・解析
-- 財務データの構造化・可視化手法
+- 有価証券報告書・四半期報告書の自動取得
+- XBRLデータの解析・構造化
+- 財務データの抽出・正規化
+- 企業財務情報の比較分析
+- バッチ処理による大量データ処理
 
-## 目標
+## 特徴
 
-- 日本企業の財務データを効率的に取得・分析する手法の習得
-- XBRL データの実用的な活用方法の探求
+- TypeScript/Node.js による高速データ処理
+- EDINET API v2 の完全対応
+- 正規化されたデータモデル
+- 柔軟な出力フォーマット（JSON, CSV）

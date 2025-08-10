@@ -1,7 +1,7 @@
 {
-  "name": "20250803-study-edinet",
+  "name": "edinet-financial-analyzer",
   "version": "1.0.0",
-  "description": "EDINET API 調査・学習プロジェクト",
+  "description": "EDINETデータを活用した有価証券報告書・四半期報告書の閲覧・分析アプリケーション",
   "type": "module",
   "main": "index.js",
   "engines": {
@@ -15,15 +15,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/koumatsumoto/20250803-study-edinet.git"
+    "url": "git+https://github.com/koumatsumoto/edinet-financial-analyzer.git"
   },
-  "keywords": [],
+  "keywords": [
+    "edinet",
+    "financial",
+    "securities",
+    "xbrl",
+    "analysis",
+    "japan"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/koumatsumoto/20250803-study-edinet/issues"
+    "url": "https://github.com/koumatsumoto/edinet-financial-analyzer/issues"
   },
-  "homepage": "https://github.com/koumatsumoto/20250803-study-edinet#readme",
+  "homepage": "https://github.com/koumatsumoto/edinet-financial-analyzer#readme",
   "devDependencies": {
     "@types/node": "^24.1.0",
     "@types/papaparse": "^5.3.16",

@@ -2,6 +2,6 @@ remote_theme: pages-themes/slate@v0.2.0
 plugins:
   - jekyll-remote-theme
 
-title: "EDINET 研究プロジェクト"
-description: "金融庁 EDINET システムの仕様理解と XBRL データ活用手法の実践的研究"
+title: "EDINET Financial Analyzer"
+description: "EDINETデータを活用した有価証券報告書・四半期報告書の閲覧・分析アプリケーション"
 show_downloads: false

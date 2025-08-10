@@ -1,10 +1,10 @@
-# EDINET 研究プロジェクト
+# EDINET Financial Analyzer
 
-金融庁 EDINET システムの仕様理解と XBRL データ活用手法の実践的研究
+EDINETデータを活用した有価証券報告書・四半期報告書の閲覧・分析アプリケーション
 
 ## プロジェクト概要
 
-このプロジェクトは、金融庁が運営する EDINET（Electronic Disclosure for Investors' NETwork）システムの仕様を理解し、XBRL データの効果的な活用手法を研究することを目的としています。
+このプロジェクトは、金融庁が運営する EDINET（Electronic Disclosure for Investors' NETwork）システムから企業の財務情報を取得・解析し、投資判断や企業分析をサポートするアプリケーションです。有価証券報告書や四半期報告書のXBRLデータを正規化し、使いやすい形式で提供します。
 
 ## ドキュメント
 
