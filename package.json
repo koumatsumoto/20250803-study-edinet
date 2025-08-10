@@ -45,9 +45,11 @@
   },
   "dependencies": {
     "@types/jszip": "^3.4.0",
+    "@types/uuid": "^10.0.0",
     "iconv-lite": "^0.6.3",
     "jszip": "^3.10.1",
     "papaparse": "^5.5.3",
+    "uuid": "^11.1.0",
     "zod": "^4.0.16"
   }
 }
