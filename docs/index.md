@@ -20,6 +20,7 @@
 - [書類取得API仕様書](design/document-details-api.md) - EDINET 書類取得APIの詳細仕様
 - [テストフレームワーク](design/testing-framework.md) - Vitest と MSW を使用したテスト環境
 - [正規化データモデル設計](design/normalized-data-model.md) - EDINET財務データの正規化設計方針
+- [日次バッチ処理システム](design/daily-batch-processing-system.md) - EDINET文書の自動取得・正規化バッチシステム
 
 ### メモ・ノート
 
